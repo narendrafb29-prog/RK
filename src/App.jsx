@@ -1,100 +1,87 @@
-import React from "react";
+import React, { useState } from "react";
+import { Routes, Route, Link } from "react-router-dom";
 import Logo from "./components/Logo";
-import Banner from "./components/Banner";
+import CartDrawer from "./components/CartDrawer";
+import Home from "./pages/Home";
+import ProductDetails from "./pages/ProductDetails";
+import { useCart } from "./state/CartContext";
 
 export default function App() {
+  // initial product data
+  const initialProducts = [
+    {
+      id: 1,
+      name: "Smart Watch",
+      price: "$149",
+      img: "/products/watch.png",
+      rating: 4,
+      description: "Fitness tracking, heart rate monitor & Bluetooth connectivity.",
+      reviews: []
+    },
+    {
+      id: 2,
+      name: "DSLR Camera",
+      price: "$499",
+      img: "/products/camera.png",
+      rating: 5,
+      description: "High-quality photography with 24MP lens and autofocus.",
+      reviews: []
+    },
+    {
+      id: 3,
+      name: "Gaming Laptop",
+      price: "$899",
+      img: "/products/laptop.png",
+      rating: 5,
+      description: "RTX graphics, 16GB RAM, and RGB keyboard for gaming.",
+      reviews: []
+    },
+    {
+      id: 4,
+      name: "Wireless Speaker",
+      price: "$99",
+      img: "/products/speaker.png",
+      rating: 4,
+      description: "Crystal clear audio, deep bass, and long battery life.",
+      reviews: []
+    }
+  ];
+
+  const [products, setProducts] = useState(initialProducts);
+  const [cartOpen, setCartOpen] = useState(false);
+  const { cart } = useCart();
+
   return (
-    <div className="w-full min-h-screen bg-gray-50">
-
-      {/* Navbar */}
-      <nav className="w-full bg-white shadow-md py-4 px-6 flex justify-between items-center fixed top-0 left-0 z-50">
-        <Logo />
-        <button className="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:scale-105 transition">
-          Contact
-        </button>
-      </nav>
-
-      {/* Banner Section */}
-      <div className="pt-20">
-        <Banner />
-      </div>
-
-      {/* Product Section */}
-      <section className="py-16 px-6">
-        <h2 className="text-4xl font-bold text-center bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
-          Featured Products
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-12">
-
-          {[
-            { name: "Smart Watch", price: "$149" },
-            { name: "DSLR Camera", price: "$499" },
-            { name: "Gaming Laptop", price: "$899" },
-            { name: "Wireless Speaker", price: "$99" },
-            { name: "Fitness Tracker", price: "$79" },
-            { name: "Headphones", price: "$129" },
-          ].map((product, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl hover:scale-105 transition cursor-pointer"
-            >
-              <div className="w-full h-40 bg-gray-200 rounded-xl animate-pulse mb-4"></div>
-              <h3 className="text-xl font-bold">{product.name}</h3>
-              <p className="text-gray-600">{product.price}</p>
-              <button className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                View Product
-              </button>
-            </div>
-          ))}
-
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-5">
+      <header className="flex justify-between items-center bg-white shadow-lg rounded-xl p-4">
+        <div className="flex items-center gap-6">
+          <Logo />
+          <nav className="hidden md:flex gap-6">
+            <Link to="/" className="text-gray-700 hover:text-purple-600">Home</Link>
+            <Link to="/" className="text-gray-700 hover:text-purple-600">Products</Link>
+            <Link to="#about" className="text-gray-700 hover:text-purple-600">About</Link>
+          </nav>
         </div>
-      </section>
 
-      {/* About Section */}
-      <section className="py-16 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-center">
-        <h2 className="text-4xl font-bold mb-4">About Me</h2>
-        <p className="max-w-3xl mx-auto text-lg">
-          Hi! I'm <strong>Rahul Vishnoi</strong>, a web developer passionate about
-          building modern, beautiful, and responsive ecommerce websites using
-          React and Tailwind CSS.  
-          My goal is to deliver stunning shopping experiences with clean design
-          and strong functionality.
-        </p>
-      </section>
-
-      {/* Contact Form */}
-      <section className="py-16 px-6 text-center">
-        <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Contact Me
-        </h2>
-
-        <form className="max-w-xl mx-auto grid gap-6">
-          <input
-            type="text"
-            placeholder="Your Name"
-            className="w-full px-4 py-3 border rounded-xl"
-          />
-          <input
-            type="email"
-            placeholder="Your Email"
-            className="w-full px-4 py-3 border rounded-xl"
-          />
-          <textarea
-            placeholder="Your Message"
-            className="w-full px-4 py-3 border rounded-xl"
-            rows="5"
-          ></textarea>
-
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-xl shadow-md hover:scale-105 transition">
-            Send Message
+        <div className="flex items-center gap-4">
+          <button onClick={() => setCartOpen(true)} className="relative">
+            <span className="px-3 py-2 bg-white rounded shadow">Cart</span>
+            {cart.length > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center">{cart.reduce((s,p)=> s + p.qty,0)}</span>}
           </button>
-        </form>
-      </section>
+        </div>
+      </header>
 
-      {/* Footer */}
-      <footer className="py-6 text-center bg-gray-900 text-white">
-        © 2025 Rahul Vishnoi. All Rights Reserved.
+      <main className="mt-6">
+        <Routes>
+          <Route path="/" element={<Home products={products} setProducts={setProducts} />} />
+          <Route path="/product/:id" element={<ProductDetails products={products} />} />
+        </Routes>
+      </main>
+
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+
+      <footer className="text-center mt-10 text-gray-600">
+        © 2025 Rahul Vishnoi — E-Commerce Portfolio
       </footer>
     </div>
   );
